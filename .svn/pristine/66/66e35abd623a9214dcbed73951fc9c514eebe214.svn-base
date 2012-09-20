@@ -1,0 +1,143 @@
+<?php
+/* *********************************************************************
+ * Copyright (C) 2007-2012 Kelly Stratton Music
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ *  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ *
+ * $Id$
+ * 
+ * ****************************************************************** */
+require_once('Utils.php');
+require_once('PageContent.php');
+ 
+class Field extends PageContent {
+	public $fieldname;
+	public $fieldlabel;
+	public $label_always=false;
+	public $fieldclass='';
+	
+	function __construct($fieldname,$fieldlabel,$label_always = false) {
+		$this->fieldname = $fieldname;
+		$this->fieldlabel = $fieldlabel;
+		$this->label_always = $label_always;
+	}
+	
+	function getLabelXHTML() {
+		$xhtml = "";
+		$xhtml .= "<span class='label_span'>{$this->fieldlabel}</span>\n";
+		return $xhtml;
+	}
+	
+	function getErrorSpanXHTML() {
+		return "<span class='error_span' id='{$this->fieldname}__error'></span>\n";
+	}
+	
+	function getXHTML() {}
+}
+
+class TextField extends Field {
+	public $width;
+	function __construct($fieldname,$fieldlabel, $width,$label_always = false) {
+		parent::__construct($fieldname,$fieldlabel,$label_always);
+		$this->width = $width;
+	}
+	
+	function getXHTML() {
+		$field_size = $this->width > 50 ? 50 : $this->width;
+		$xhtml = "";
+		$xhtml .= "<div class='field_container text_field_container' id='field_div__{$this->fieldname}'>\n";
+		if ($this->label_always)
+			$xhtml .= $this->getLabelXHTML();
+		$xhtml .= "<input type='text' size='$field_size' maxlength='{$this->width}' name='{$this->fieldname}' id='{$this->fieldname}' value='' />\n";
+		$xhtml .= $this->getErrorSpanXHTML();
+		$xhtml .= "</div>\n";
+		return $xhtml;
+	}
+}
+
+class PasswordField extends TextField {
+	function getXHTML() {
+		$field_size = $this->width > 50 ? 50 : $this->width;
+		$xhtml = "";
+		$xhtml .= "<div class='field_container text_field_container' id='field_div__{$this->fieldname}'>\n";
+		if ($this->label_always)
+			$xhtml .= $this->getLabelXHTML();
+		$xhtml .= "<input type='password' size='$field_size' maxlength='{$this->width}' name='{$this->fieldname}' id='{$this->fieldname}' value='' />\n";
+		$xhtml .= $this->getErrorSpanXHTML();
+		$xhtml .= "</div>\n";
+		return $xhtml;
+	}
+}
+
+class TextAreaField extends Field {
+	public $rows;
+	public $cols;
+	function __construct($fieldname,$fieldlabel, $rows,$cols,$label_always = false) {
+		parent::__construct($fieldname, $fieldlabel,$label_always);
+		$this->rows = $rows;
+		$this->cols = $cols;
+	}
+	
+	function getXHTML() {
+		$xhtml = "";
+		$xhtml .= "<div class='field_container text_field_container' id='field_div__{$this->fieldname}'>\n";
+		if ($this->label_always)
+			$xhtml .= $this->getLabelXHTML();
+		$xhtml .= "<textarea class='contact_text' name='{$this->fieldname}' id='{$this->fieldname}' rows='{$this->rows}' cols='{$this->cols}'></textarea>\n";
+		$xhtml .= $this->getErrorSpanXHTML();
+		$xhtml .= "</div>\n";
+		return $xhtml;
+	}
+}
+
+class CheckboxField extends Field {
+	public $checked;
+	public $value;
+	
+	function __construct($fieldname,$fieldlabel,$value=1,$checked=false,$label_always = false) {
+		parent::__construct($fieldname, $fieldlabel,$label_always);
+		$this->checked = $checked;
+		$this->value = $value;
+	}
+	
+	function getXHTML() {
+		$xhtml = "";
+		$xhtml .= "<div class='field_container checkbox_field_container' id='field_div__{$this->fieldname}'>\n";
+		$xhtml .= "<input type='checkbox' name='{$this->fieldname}' id='{$this->fieldname}' value='{$this->value}' " . ($this->checked ? "checked='checked'" : "") . " />\n";
+		if ($this->label_always)
+			$xhtml .= $this->getLabelXHTML();
+		$xhtml .= $this->getErrorSpanXHTML();
+		$xhtml .= "</div>\n";
+		return $xhtml;
+	}
+}
+
+class ButtonField extends Field {
+	var $extra_class = '';
+	var $onclick = '';
+	
+	function __construct($id, $label, $onclick = '',$class='') {
+		$this->fieldname = $id;
+		$this->fieldlabel = $label;
+		$this->onclick = $onclick;
+		$this->extra_class = $class;
+	}
+	
+	function getXHTML() {
+		$xhtml = "";
+		$onclick = "";
+		if ($this->onclick != "")
+			$onclick = "onclick='" . genericEscape($this->onclick) . "'";
+		$xhtml .= "<input type='button' id='{$this->fieldname}' value='{$this->fieldlabel}' class='fieldbutton {$this->extra_class}' {$onclick} />\n";
+		return $xhtml;
+	}
+}
+
+?>

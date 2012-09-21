@@ -29,6 +29,7 @@ class PageContent {
 	private $js_top = "";
 	private $js_bottom = "";
 	private $has_menu = true;
+	protected $form_handler;
 	protected $page_elements = array();
 	protected $extra_content = array();  // retrievable, but not output with getXHTML - ex - used to pull out and put in feature section on ksm
 	protected $custom_content = array(); // This is content used by the specific build and pulled any way they want it - it gets assimilated but nothing is done with output here

@@ -232,6 +232,17 @@ class ButtonField extends Field {
 	}
 }
 
+class SubmitField extends ButtonField {
+	function getXHTML() {
+		$xhtml = "";
+		$onclick = "";
+		if ($this->onclick != "")
+			$onclick = "onclick='" . genericEscape($this->onclick) . "'";
+		$xhtml .= "<input type='submit' id='{$this->fieldname}' value='{$this->fieldlabel}' class='fieldbutton {$this->extra_class}' {$onclick} />\n";
+		return $xhtml;
+	}
+}
+
 class SelectField extends Field {
 	var $has_null_value = false;
 	var $null_value = -1;
@@ -335,8 +346,6 @@ class FormHandler extends PageContent {
 	
 	function rowLevelValidate($formdata,&$result) {
 		$datafields = $this->getDataFields();
-		log_info(print_r($formdata,true));
-		log_info(print_r($datafields,true));
 		foreach ($datafields as $name => $element) {
 			$fieldresult = new FormFieldResult();
 			if (!array_key_exists($element->fieldname,$formdata)) {
@@ -425,7 +434,6 @@ class FormHandler extends PageContent {
 		log_info("Validation Complete: " . $result->error);
 		if (!$result->error) {
 			$sorted_arguments = $this->sort_submitted_fields($p_arguments['formvalues']);
-			log_info(print_r($sorted_arguments,true));
 			$this->save($sorted_arguments);
 		}
 		return $result;

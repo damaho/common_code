@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: ScreenLoad.php 63 2012-09-22 01:25:39Z Dave $
+ * $Id$
 	* 
 * ****************************************************************** */
 class ScreenLoad {

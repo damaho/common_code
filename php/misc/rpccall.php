@@ -66,7 +66,7 @@ class SendResponse {
 	}
 	
 	function output() {
-		//log_info(json_encode($this->response));
+		log_info(json_encode($this->response));
 		echo json_encode($this->response);
 	}
 }

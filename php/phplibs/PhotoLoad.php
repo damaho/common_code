@@ -11,34 +11,45 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: ScreenLoad.php 63 2012-09-22 01:25:39Z Dave $
+ * $Id$
 	* 
 * ****************************************************************** */
-class ScreenLoad {
-	private $screen_location;
-	private $images = array();
-	private $loaded_image=null;
+class PhotoLoad {
+	protected $images = array();
+	protected $image_name=null;
+	protected $image_path;
+	protected $image_fullpath=null;
 	
-	function __construct($screen_location) {
-		$this->screen_location = $screen_location;
-		$this->get_images();
-		$this->load_image();
+	function __construct($image_path,$image,$name=null) {
+		//$this->image_path = $image_path;
+		//$this->addImage($image,$image_path,$name);
+		//$this->get_images();
+		//$this->load_image();
+		$this->loaded_image = $image_path . "/" . $image;
 		if (!is_null($this->loaded_image)) {
-			header ('content-type: image/gif'); 
+			header ('Content-type: image/gif'); 
 			readfile($this->loaded_image);
 		}
 	}
 	
 	private function load_image() {
-		$num_images = count($this->images);
-		if ($num_images == 0)
-			return;
-		$min = 0;
-		$max = $num_images - 1;
-		$image =  $this->images[rand($min,$max)];
+		$image =  $this->images[0];
 		$this->loaded_image = $image['path'] . "/" . $image['file'];
 	}
 	
+	private function get_images() {
+		if ($handle = opendir($this->image_path)) {
+			while (($file = readdir($handle)) !== false) {
+				if ($file == "." || $file == "..")
+					continue;
+				if (is_readable($this->image_path . "/" . $file) && @getimagesize($this->image_path . "/" . $file)) {
+					$this->addImage($file,$this->image_path,$file);
+				}
+			}
+		}
+		closedir($handle);
+	}
+
 	public function addImage($file,$path,$name=NULL) {
 		$fullpath = $path . "/" . $file;
 		$tmp = array();
@@ -48,19 +59,6 @@ class ScreenLoad {
 		$tmp['data'] = getimagesize($fullpath);
 
 		$this->images[] = $tmp;
-	}
-	
-	private function get_images() {
-		if ($handle = opendir($this->screen_location)) {
-			while (($file = readdir($handle)) !== false) {
-				if ($file == "." || $file == "..")
-					continue;
-				if (is_readable($this->screen_location . "/" . $file) && @getimagesize($this->screen_location . "/" . $file)) {
-					$this->addImage($file,$this->screen_location,$file);
-				}
-			}
-		}
-		closedir($handle);
 	}
 	
 	private function getXHTML() {
@@ -76,7 +74,6 @@ class ScreenLoad {
 //		$xhtml .= "</html>\n";
 		return $xhtml;
 	}
-
 }
 
 ?>

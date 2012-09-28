@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: PageContent.php 66 2012-09-23 17:42:44Z Dave $
+ * $Id$
  * 
  * ****************************************************************** */
 require_once("Session.php");
@@ -186,10 +186,6 @@ class PageContent {
 	
 	public function hasMenu() {
 		return $this->has_menu;
-	}
-	
-	function formatLoadRequest() {
-		return false;
 	}
 	
 	function assimilatePageElement($obj) {

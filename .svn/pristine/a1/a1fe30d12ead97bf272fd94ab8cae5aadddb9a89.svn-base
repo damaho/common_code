@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: FieldElements.php 66 2012-09-23 17:42:44Z Dave $
+ * $Id$
  * 
  * ****************************************************************** */
 require_once('Utils.php');
@@ -239,20 +239,6 @@ class SubmitField extends ButtonField {
 		if ($this->onclick != "")
 			$onclick = "onclick='" . genericEscape($this->onclick) . "'";
 		$xhtml .= "<div><input type='submit' id='{$this->fieldname}' value='{$this->fieldlabel}' class='fieldbutton {$this->extra_class}' {$onclick} /></div>\n";
-		return $xhtml;
-	}
-}
-
-class ImageField extends SubmitField {
-	var $extra_class = '';
-	var $onclick = '';
-	
-	function getXHTML() {
-		$xhtml = "";
-		$onclick = "";
-		if ($this->onclick != "")
-			$onclick = "onclick='" . genericEscape($this->onclick) . "'";
-		$xhtml .= "<div class='field_container'><input type='image' src='{$this->fieldlabel}' id='{$this->fieldname}' class='{$this->extra_class}' {$onclick} /></div>\n";
 		return $xhtml;
 	}
 }

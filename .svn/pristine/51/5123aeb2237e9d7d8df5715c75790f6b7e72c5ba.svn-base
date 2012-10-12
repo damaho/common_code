@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: FieldElements.php 72 2012-10-11 13:16:19Z Dave $
+ * $Id$
  * 
  * ****************************************************************** */
 require_once('Utils.php');
@@ -34,7 +34,6 @@ class Field extends PageContent {
 	public $field_level_message = "";
 	public $more_info = "";
 	public $alternate_label = "";
-	public $always_send = false;
 	
 	function __construct($fieldname,$fieldlabel,$required=false,$label_always = false) {
 		$this->fieldname = $fieldname;
@@ -133,7 +132,6 @@ class HiddenField extends Field {
 	function __construct($fieldname,$default_value) {
 		parent::__construct($fieldname, "",false);
 		$this->default_value = $default_value;
-		$this->always_send = true;
 	}
 	
 	function getXHTML() {
@@ -306,18 +304,4 @@ class SelectField extends Field {
 	}
 }
 
-class FileField extends Field {
-	function getXHTML() {
-		$xhtml = "";
-		$xhtml .= "<div class='field_container text_field_container' id='field_div__{$this->fieldname}'>\n";
-		if ($this->label_always)
-			$xhtml .= $this->getLabelXHTML();
-		$xhtml .= "<input type='file' name='{$this->fieldname}' id='{$this->fieldname}' />\n";
-		if ($this->more_info != "")
-			$xhtml .= $this->getMoreInfoXHTML();
-		$xhtml .= $this->getErrorSpanXHTML();
-		$xhtml .= "</div>\n";
-		return $xhtml;
-	}
-}
 ?>

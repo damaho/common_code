@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: rpccall.php 72 2012-10-11 13:16:19Z Dave $
+ * $Id$
  * 
  * ********************************************************************* */
 require_once('ServiceClasses.php');
@@ -34,16 +34,14 @@ class SendResponse {
 			$this->collection = $_REQUEST['COLLECTION'];
 		else
 			return false;
-
 		if (isset($_REQUEST['RPC']))
 			$this->RPC = $_REQUEST['RPC'];
 		else
 			return false;
-
 		if (isset($_REQUEST['ARGS']))
 			$this->arguments = $_REQUEST['ARGS'];
 		else
-			$this->arguments = array();
+			return false;
 		return true;
 	}
 	

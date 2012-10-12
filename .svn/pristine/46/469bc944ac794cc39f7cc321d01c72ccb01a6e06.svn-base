@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: PageContent.php 72 2012-10-11 13:16:19Z Dave $
+ * $Id$
  * 
  * ****************************************************************** */
 require_once("Session.php");
@@ -43,7 +43,6 @@ class PageContent {
 	protected $primary_key_value;
 	protected $primary_tablename;
 	protected $datafields = array();
-	protected $datafield_translation = array();
 	protected $manager;
 	
 	
@@ -52,7 +51,7 @@ class PageContent {
 	}
 	
 	public function setTitle($title) {
-		//log_info("SET TITLE TO $title");
+		log_info("SET TITLE TO $title");
 		$this->title = $title;
 	}
 	
@@ -268,24 +267,21 @@ class PageContent {
 		$this->addPageElement($name,$element);
 		$fieldname = $element->fieldname;
 		$this->datafields[$name] = $tablename;
-		if (!$always_send_value)
-			$always_send_value = $element->always_send;
 		$js_send = $always_send_value ? 'true' : 'false';
 		$this->addJSBottom($this->manager . ".addDataField('{$this->collection}','{$this->formname}','{$fieldname}',{$js_send});\n");
 	}
 	
-	function rowLevelValidate($formdata,&$result,$mode) {
+	function rowLevelValidate($formdata,&$result) {
 		$datafields = $this->getDataFields();
-		
 		foreach ($datafields as $name => $element) {
 			$fieldresult = new FormFieldResult();
-			if (!array_key_exists($element->fieldname,$formdata) && $mode == 'NEW') {
+			if (!array_key_exists($element->fieldname,$formdata)) {
 				if ($element->required) {
 					$fieldresult->error = true;
 					$element->setFieldLevelMessage($element->fieldlabel . " is required");
 				}
 			} else {
-				if (isset($formdata[$element->fieldname]) && !$element->test($formdata[$element->fieldname]))
+				if (!$element->test($formdata[$element->fieldname]))
 					$fieldresult->error = true;
 			}
 			$fieldresult->message = $element->getFieldLevelMessage();
@@ -305,22 +301,6 @@ class PageContent {
 	
 	function UPDATE($p_arguments) {
 		$this->updateHook($p_arguments);
-		$qry = "UPDATE {$this->primary_tablename} SET ";
-		$set = "";
-		$where = "WHERE {$this->primary_key} = '" . genericEscape($p_arguments[$this->primary_tablename][$this->primary_key]) . "' ";
-		unset($p_arguments[$this->primary_tablename][$this->primary_key]);
-		if (count($p_arguments[$this->primary_tablename]) == 0)
-			return;
-		foreach ($p_arguments[$this->primary_tablename] as $fieldname => $fieldvalue) {
-			if ($set != "")
-				$set .= ",";
-			$set .= $fieldname . " = '" . genericEscape($fieldvalue) . "' ";
-			
-		}
-		$qry .= $set;
-		$qry .= $where;
-		$insert_uid = $this->callUpdateQuery($qry);
-		return $insert_uid;
 	}
 	
 	function INSERT($p_arguments) {
@@ -346,7 +326,6 @@ class PageContent {
 	
 	function save($sorted_arguments) {
 		// convert to real fields
-		
 		if (isset($sorted_arguments[$this->primary_tablename])) {
 			if (!isset($sorted_arguments[$this->primary_tablename][$this->primary_key]) || $sorted_arguments[$this->primary_tablename][$this->primary_key] == -1) {
 				$this->INSERT($sorted_arguments);
@@ -377,13 +356,11 @@ class PageContent {
 		$result->data['collection'] = $this->collection;
 		$result->data['form_name'] = $this->formname;
 		$result->data['fieldresults'] = array();
-		
-		$this->rowLevelValidate($p_arguments['formvalues'],$result,$p_arguments['mode']);
+		$this->rowLevelValidate($p_arguments['formvalues'],$result);
 		$sorted_values = $this->sort_submitted_fields($p_arguments['formvalues']);
 
 		if (!$result->error) {
 			$sorted_arguments = $this->sort_submitted_fields($p_arguments['formvalues']);
-			
 			$this->save($sorted_arguments);
 		}
 		return $result;

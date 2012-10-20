@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: LocationFromIp.php 73 2012-10-20 22:29:18Z Dave $
+ * $Id$
  * 
  * This method uses a borrowed script from php snippets that usess netip
  * to get city state country

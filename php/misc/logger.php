@@ -1,11 +1,22 @@
 <?php
 $log_path="site.log";
+$log_write = array(
+	'QUERY' => true,
+	'DEBUG' => true,
+	'INFO' => true,
+	'ERROR' => true
+);
+if (file_exists('log_settings.php'))
+	require_once('log_settings.php');
 
 function log_write($type,$str) {
 	global $log_path;
+	global $log_write;
 	if (!file_exists($log_path)) {
 		reset_log();
 	}
+	if (array_key_exists($type,$log_write) && !$log_write[$type])
+		return;
 	$h = fopen($log_path,"a");
 
 	$full_self = $_SERVER['PHP_SELF'];

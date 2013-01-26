@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: PageContent.php 76 2012-11-03 14:18:04Z Dave $
+ * $Id$
  * 
  * ****************************************************************** */
 require_once("Session.php");
@@ -35,9 +35,6 @@ class PageContent {
 	protected $extra_content = array();  // retrievable, but not output with getXHTML - ex - used to pull out and put in feature section on ksm
 	protected $custom_content = array(); // This is content used by the specific build and pulled any way they want it - it gets assimilated but nothing is done with output here
 	public $is_form = false;
-	public $form_action = "index.php";
-	public $form_enctype = null;
-	public $form_onsubmit = "function() {return false}";
 	
 	// TODO - following attr are for form handling - need to be moved to separate object - I suggest AjaxFormHandler
 	protected $collection;
@@ -50,10 +47,10 @@ class PageContent {
 	protected $datafield_translation = array();
 	protected $manager;
 	public $is_tabbed = false;
-	public $tab_class = "tabber";
 	public $save_button = null;
 	public $tabs = array();
 	public $use_table_prefixes = false;
+	
 	
 	function __construct($title = '') {
 		$this->setTitle($title);
@@ -75,15 +72,13 @@ class PageContent {
 	public function getXHTML() {
 		$xhtml = "";
 		$elements = $this->getPageElements();
-		if ($this->is_form)
-			$xhtml .= $this->startFormXHTML();
 		foreach ($elements as $name => $element) {
 			if (!$this->canShow($element) || isset($this->tabs[$name]))
 				continue;
 			$xhtml .= $element->getXHTML();
 		}
 		if ($this->is_tabbed) {
-			$xhtml .= "<div class='{$this->tab_class}'>\n";
+			$xhtml .= "<div class='tabber'>\n";
 			foreach ($this->tabs as $name => $ditto) {
 				if (!$this->canShow($this->page_elements[$name]))
 					continue;
@@ -102,8 +97,7 @@ class PageContent {
 			$save_button = new ButtonField('save_settings','Save');
 			$xhtml .= "<div class='padder' style='text-align:center;'>"  . $save_button->getXHTML() . "</div>\n";
 		}
-		if ($this->is_form)
-			$xhtml .= $this->finishFormXHTML();
+		
 		return $xhtml;
 	}
 	
@@ -149,20 +143,16 @@ class PageContent {
 		$this->save_button = true;
 	}
 	
-	public function initPageContent() {}
-	
 	public function addPageElement($name,$element) {
 		if (!($element instanceof PageContent))
 			return;
 		$this->page_elements[$name] = $element;
-		$this->page_elements[$name]->initPageContent();
 	}
 	
 	public function addExtraContent($name,$element) {
 		if (!($element instanceof PageContent))
 			return;
 		$this->extra_content[$name] = $element;
-		$this->extra_content[$name]->initPageContent();
 	}
 	
 	public function addCustomContent($name,$element) {
@@ -285,17 +275,7 @@ class PageContent {
 			$this->assimilatePageElement($obj);
 		}
 	}
-	
-	function startFormXHTML() {
-		$enctype = is_null($this->form_enctype) ? "" : "enctype=\"{$this->form_enctype}\"";
-		//return "<form id='{$this->form_name}' name='{$this->form_name}' $enctype action='{$this->form_action}' method='post' onsubmit='{$this->form_onsubmit}'>\n";
-		return "<form id='{$this->form_name}' $enctype action='{$this->form_action}' method='post' onsubmit='{$this->form_onsubmit}'>\n";
-	}
 
-
-	function finishFormXHTML() {
-		return "</form>\n";
-	}
 
 	// TODO - The following are form handling functions.  They need to be handled in a seperate object, but I don't have time to do that now
 	function setAsForm($collection,$primary_table,$formname,$manager = "",$parent_collection = null) {
@@ -307,12 +287,9 @@ class PageContent {
 		if (!is_null($this->primary_key) && !isset($this->datafields[$this->primary_key]))
 			$this->addDataFieldElement($this->primary_key,new HiddenField($this->primary_key,$this->primary_key_value),true,$this->primary_tablename, $parent_collection);
 		$this->initDataFields();
-		
 		if (!isset($this->datafields[$this->primary_key]))
 			$this->addDataFieldElement($this->primary_key,new HiddenField($this->primary_key,0),true,$this->primary_tablename,$parent_collection);
 	}
-	
-	
 	
 	function setTabbed($tabbed=true) {
 		$this->is_tabbed = $tabbed;
@@ -349,7 +326,6 @@ class PageContent {
 	function addDataFieldElement($name,$element,$always_send_value = false,$tablename = null,$collection_name = null) {
 		require_once("FieldElements.php");
 		$collection_name = is_null($collection_name) ? $this->collection : $collection_name;
-		$tablename = is_null($tablename) ? $this->primary_tablename : $tablename;  // TODO - WATCH THIS - It may be that a null tablename wants to mean just a field to nowhere
 		$this->addPageElement($name,$element);
 		$fieldname = $element->fieldname;
 		$this->datafields[$name] = $tablename;
@@ -481,7 +457,6 @@ class PageContent {
 		
 	function UPDATE($p_arguments) {
 		$response = new GenericResult();
-		$response->type='update_result';
 		$this->updateHook($p_arguments);
 		$qry = $this->getUpdateQuery($p_arguments,$this->primary_tablename);
 		$result = $this->callUpdateQuery($qry);
@@ -506,7 +481,6 @@ class PageContent {
 	
 	function INSERT($p_arguments) {
 		$response = new GenericResult();
-		$response->type='insert_result';
 		$this->insertHook($p_arguments);
 		$qry = $this->getInsertQuery($p_arguments,$this->primary_tablename);
 		$result = $this->callUpdateQuery($qry);
@@ -585,10 +559,8 @@ class PageContent {
 
 		if (!$result->error) {
 			$sorted_arguments = $this->sort_submitted_fields($p_arguments['formvalues']);
-			$result = $this->save($sorted_arguments,$p_arguments['mode']);
 			$result->data['sorted_results'] = array('table_values' => $sorted_arguments);
-		} else {
-			$result->type='submit_error';
+			$this->save($sorted_arguments);
 		}
 		return $result;
 	}

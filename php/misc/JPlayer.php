@@ -34,7 +34,7 @@ class JPlayer extends PageContent {
 	
 	function getXHTML() {
 		$xhtml  = "<div id='jplayer__{$this->player_id}'></div>\n";
-		
+		$xhtml .= "<div id=\"jp_container_1\" class=\"jp-audio\">\n";
 		$xhtml .= "<div id='jplayer_interface__{$this->player_id}' class='jplayer_interface'>\n";
 		
 		
@@ -57,6 +57,7 @@ class JPlayer extends PageContent {
 		//$xhtml .= "	</div>\n";
 		
 		
+		$xhtml .= "</div>\n";
 		$xhtml .= "</div>\n";
 		
 		return $xhtml;

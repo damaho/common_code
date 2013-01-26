@@ -132,9 +132,10 @@ $(function() {
 				ready: function() {
 					self.change_track(0);
 				},
-				swfPath: "swf",
+				swfPath: "/swf",
 				supplied: p_supplied,
-				oggSupport: false
+				oggSupport: false,
+				wmode:"window"
 			})
 			.jPlayer('onSoundComplete', self.play_next);
 		}

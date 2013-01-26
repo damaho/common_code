@@ -11,21 +11,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: ServiceClasses.php 76 2012-11-03 14:18:04Z Dave $
+ * $Id: ajax_image.php 74 2012-10-20 22:29:27Z Dave $
  * 
 * ****************************************************************** */
-class JSONRPC_Response {
-	var $result;
-	var $error;
-	var $id;
-}
+require_once ('AjaxImage.php');
 
-class GenericResult {
-	var $type;
-	var $id;
-	var $message;
-	var $collection;
-	var $data = array();
-	var $error = false;
+if(isset($_POST) and $_SERVER['REQUEST_METHOD'] == "POST") {
+	$foo = new AjaxImage();
+	$foo->execute();
+	$foo->printResult();
 }
 ?>

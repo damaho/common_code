@@ -67,6 +67,8 @@ class SendResponse {
 		if (property_exists($result,'collection'))
 			$result->collection = $coll;
 		$this->response->result = $result;
+		if (is_object($result) && property_exists($result,'error'))
+			$this->response->error = $result->error;
 	}
 	
 	function output() {

@@ -10,7 +10,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: Tabber.js 76 2012-11-03 14:18:04Z Dave $
+ * $Id$
  * 
 * ****************************************************************** */
 $(function() {

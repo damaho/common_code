@@ -100,6 +100,17 @@ function curlBGPost($url,$json) {
 	$x = curl_exec($c);
 	return $x;
 }
+
+
+function getUTCDateFromDate($datetime) {
+	$ts = strtotime($datetime);
+	return date('Y-m-d H:i:s',$ts + (strtotime(gmdate('Y-m-d H:i:s')) - $ts));
+}
+
+function getLocalDateFromUTC($datetime) {
+	$ts = strtotime($datetime);
+	return date('Y-m-d H:i:s',$ts - (strtotime(gmdate('Y-m-d H:i:s')) - time()));
+}
  
 /**
 * Is Windows

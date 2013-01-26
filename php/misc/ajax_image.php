@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: ajax_image.php 74 2012-10-20 22:29:27Z Dave $
+ * $Id: ajax_image.php 78 2013-01-26 15:58:07Z Dave $
  * 
 * ****************************************************************** */
 require_once ('AjaxImage.php');

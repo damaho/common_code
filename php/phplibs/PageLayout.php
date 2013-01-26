@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id: PageLayout.php 65 2012-09-23 17:00:02Z Dave $
+ * $Id: PageLayout.php 78 2013-01-26 15:58:07Z Dave $
  * 
  * Purpose is to place content into a generic html framework
  * 

@@ -2,7 +2,7 @@
 /* *********************************************************************
  * Copyright 2009 David Horn
  * 
- * $Id: Utils.php 76 2012-11-03 14:18:04Z Dave $
+ * $Id: Utils.php 78 2013-01-26 15:58:07Z Dave $
  * 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF

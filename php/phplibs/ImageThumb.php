@@ -11,7 +11,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *
- * $Id$
+ * $Id: ImageThumb.php 78 2013-01-26 15:58:07Z Dave $
  * 
  * ********************************************************************* */
 class ImageThumb {

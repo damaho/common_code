@@ -101,15 +101,52 @@ function curlBGPost($url,$json) {
 	return $x;
 }
 
+function getUTCDateFromTS($ts) {
+	$now_ts = time();
+	$gmt = gmdate('Y-m-d H:i:s');
+	$gmts = strtotime($gmt);
+	$diff = $gmts - $now_ts;
+	return date('Y-m-d H:i:s',$ts + $diff);
+}
 
 function getUTCDateFromDate($datetime) {
 	$ts = strtotime($datetime);
-	return date('Y-m-d H:i:s',$ts + (strtotime(gmdate('Y-m-d H:i:s')) - $ts));
+	return getUTCDateFromTS($ts);
 }
 
 function getLocalDateFromUTC($datetime) {
 	$ts = strtotime($datetime);
 	return date('Y-m-d H:i:s',$ts - (strtotime(gmdate('Y-m-d H:i:s')) - time()));
+}
+
+function relativeTime($time = false, $limit = 86400, $format = 'M jS') {
+	if (empty($time) || (!is_string($time) && !is_numeric($time))) {
+		$time = time();
+	} elseif (is_string($time)) {
+		$time = strtotime($time);
+	}
+	$now = time();
+	$relative = '';
+
+	if ($time === $now) {
+		$relative = 'now';
+	} elseif ($time > $now) {
+		$relative = 'in the future';
+	} else {
+		$diff = $now - $time;
+
+		if ($diff >= $limit) {
+			$relative = date($format, $time);
+		} elseif ($diff < 60) {
+			$relative = 'less than one minute ago';
+		} elseif (($minutes = ceil($diff/60)) < 60) {
+			$relative = $minutes.' minute'.(((int)$minutes === 1) ? '' : 's').' ago';
+		} else {
+			$hours = ceil($diff/3600);
+			$relative = 'about '.$hours.' hour'.(((int)$hours === 1) ? '' : 's').' ago';
+		}
+	}
+	return $relative;
 }
  
 /**

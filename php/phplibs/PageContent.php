@@ -250,6 +250,8 @@ class PageContent {
 	}
 	
 	function assimilatePageElement($obj) {
+		if (!is_object($obj))
+			return false;
 		$obj->execute();
 		$js_files_top = $obj->getJSFilesTop();
 		$js_files_bottom = $obj->getJSFilesBottom();
@@ -571,6 +573,17 @@ class PageContent {
 				$sorted_results[$tablename][$key] = $val;
 			}
 		}
+	}
+	
+	function getNavigationData($p_arguments) {
+		return array();
+	}
+	
+	function NAVIGATE($p_arguments) {
+		$result = new GenericResult();
+		$result->type='navigation_response';
+		$result->data = $this->getNavigationData($p_arguments);
+		return $result;
 	}
 	
 	function FORMSUBMIT($p_arguments) {

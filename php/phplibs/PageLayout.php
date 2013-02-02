@@ -42,6 +42,15 @@ class PageLayout extends PageContent {
 		return "";
 	}
 	
+	public function getElementsXHTML() {
+		$xhtml = "";
+		$elements = $this->getPageElements();
+		foreach ($elements as $name => $element) {
+			$xhtml .= $element->getXHTML();
+		}
+		return $xhtml;
+	}
+	
 	public function getXHTML() {
 		$p = new PageLibs();
 		$xhtml = $p->get_start_html();
@@ -74,10 +83,7 @@ class PageLayout extends PageContent {
 		$xhtml .= $p->get_head_end();
 		$xhtml .= $p->get_body_start($this->body_onload);
 		$xhtml .= $this->preXHTML();
-		$elements = $this->getPageElements();
-		foreach ($elements as $name => $element) {
-			$xhtml .= $element->getXHTML();
-		}
+		$xhtml .= $this->getElementsXHTML();
 		$xhtml .= $this->getBodyContent();
 		
 		$xhtml .= $this->postXHTML();

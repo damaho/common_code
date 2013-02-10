@@ -72,12 +72,19 @@ class PageContent {
 		return true;
 	}
 	
+	public function getPageElementXHTML($name) {
+		if (!array_key_exists($name,$this->page_elements) || !$this->canShow($this->page_elements[$name]))
+			return '';
+		return $this->page_elements[$name]->getXHTML();
+	}
+	
 	public function getXHTML() {
 		$xhtml = "";
 		$elements = $this->getPageElements();
 		if ($this->is_form)
 			$xhtml .= $this->startFormXHTML();
 		foreach ($elements as $name => $element) {
+			
 			if (!$this->canShow($element) || isset($this->tabs[$name]))
 				continue;
 			$xhtml .= $element->getXHTML();
@@ -100,7 +107,10 @@ class PageContent {
 		if (!is_null($this->save_button)) {
 			require_once("FieldElements.php");
 			$save_button = new ButtonField('save_settings','Save');
-			$xhtml .= "<div class='padder' style='text-align:center;'>"  . $save_button->getXHTML() . "</div>\n";
+			$xhtml .= "<div class='padder' style='text-align:center;'>\n";
+			$xhtml .= $save_button->getXHTML();
+			$xhtml .= "<div id='{$this->form_name}__status' class='form_status'></div>\n";
+			$xhtml .= "</div>\n";
 		}
 		if ($this->is_form)
 			$xhtml .= $this->finishFormXHTML();
@@ -358,12 +368,14 @@ class PageContent {
 		if (!$always_send_value)
 			$always_send_value = $element->always_send;
 		$js_send = $always_send_value ? 'true' : 'false';
-		$this->addJSBottom($this->manager . ".addDataField('{$collection_name}','{$this->form_name}','{$fieldname}',{$js_send});\n");
+		$default_value = is_numeric($element->default_value) ? $element->default_value : "'" . $element->default_value . "'";
+		if (is_null($default_value))
+			$default_value = 'null';
+		$this->addJSBottom($this->manager . ".addDataField('{$collection_name}','{$this->form_name}','{$fieldname}',{$js_send}, {$default_value});\n");
 	}
 	
 	function rowLevelValidate($formdata,&$result,$mode) {
 		$datafields = $this->getDataFields();
-		
 		foreach ($datafields as $name => $element) {
 			$fieldresult = new FormFieldResult();
 			if (!array_key_exists($element->fieldname,$formdata) && $mode == 'NEW') {
@@ -576,7 +588,19 @@ class PageContent {
 	}
 	
 	function getNavigationData($p_arguments) {
-		return array();
+		$response = array();
+		if (isset($p_arguments[$this->primary_key]) && !is_null($this->primary_tablename) && !is_null($this->primary_key)) {
+			$dob = new DataObject($this->primary_tablename);
+			$uid = $dob->escapeStr($p_arguments[$this->primary_key]);
+			$qry = "SELECT * ";
+			$qry .= "FROM {$this->primary_tablename} ";
+			$qry .= "WHERE {$this->primary_key} = '{$uid}' ";
+			$qry .= "LIMIT 1 ";
+			$dob->setQuery($qry);
+			if ($dob->fetch(MYSQL_ASSOC))
+				$response = $dob->getRowAsArray();
+		}
+		return $response;
 	}
 	
 	function NAVIGATE($p_arguments) {
@@ -592,7 +616,6 @@ class PageContent {
 		$result->data['form_name'] = $this->form_name;
 		$result->data['fieldresults'] = array();
 		$result->data['sorted_results'] = array();
-		
 		$this->rowLevelValidate($p_arguments['formvalues'],$result,$p_arguments['mode']);
 		$sorted_values = $this->sort_submitted_fields($p_arguments['formvalues']);
 

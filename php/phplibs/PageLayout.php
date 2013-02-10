@@ -24,6 +24,7 @@ class PageLayout extends PageContent {
 	private $default_content = 'Home';
 	protected $pagecontent_title = '';
 	private $site_jsmanager = null;
+	public $requested_collection = '';
 	
 	function __construct($title='') {
 		parent::__construct($title);
@@ -143,7 +144,8 @@ class PageLayout extends PageContent {
 		ob_start();
 
 		include_once ("{$name}.php");
-		
+		$this->requested_collection = $name;
+
 		$this->updateMenus($name);  // menu has a state where the active collection is styled differently
 		$this->registerLocation($name);
 		if (class_exists($name)) {
@@ -170,7 +172,7 @@ class PageLayout extends PageContent {
 						$this->setTitle($title);
 					}
 				}
-				$this->addPageElement($title,$obj);
+				$this->addPageElement($name,$obj);
 				$this->current_id = $title;
 			} else {
 				$this->add_from_buffer();

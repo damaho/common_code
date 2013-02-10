@@ -30,7 +30,7 @@ class Field extends PageContent {
 	public $show_required_parens = true;
 	public $label_always=false;
 	public $fieldclass='';
-	public $default_value;
+	public $default_value='';
 	public $field_level_message = "";
 	public $more_info = "";
 	public $alternate_label = "";
@@ -164,6 +164,7 @@ class HiddenField extends Field {
 class UUIDField extends HiddenField {
 	function __construct($fieldname) {
 		parent::__construct($fieldname, "",true);
+		$this->default_value = null;
 	}
 }
 
@@ -205,6 +206,7 @@ class CheckboxField extends Field {
 	
 	function __construct($fieldname,$fieldlabel,$value=1,$checked=false,$label_always = false,$required=false) {
 		parent::__construct($fieldname, $fieldlabel,$required,$label_always);
+		$this->default_value = false;
 		$this->checked = $checked;
 		$this->value = $value;
 	}
@@ -289,6 +291,7 @@ class SelectField extends Field {
 	
 	function __construct($fieldname, $fieldlabel, $has_null_value=false, $multiple=false, $label_always = false,$required=false) {
 		parent::__construct($fieldname,$fieldlabel,$required,$label_always);
+		$this->default_value = 0;
 		$this->has_null_value = $has_null_value;
 	}
 	

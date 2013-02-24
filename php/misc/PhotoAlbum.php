@@ -17,7 +17,6 @@
 require_once('PageContent.php');
 
 class PhotoAlbum extends PageContent {
-	private $title = '';
 	private $date;
 	public $photos = array();
 	private $thumb_x = 50;

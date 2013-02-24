@@ -24,6 +24,7 @@ class PageLayout extends PageContent {
 	private $default_content = 'Home';
 	protected $pagecontent_title = '';
 	private $site_jsmanager = null;
+	public $requested_collection = '';
 	
 	function __construct($title='') {
 		parent::__construct($title);
@@ -40,6 +41,15 @@ class PageLayout extends PageContent {
 	
 	public function postXHTML() {
 		return "";
+	}
+	
+	public function getElementsXHTML() {
+		$xhtml = "";
+		$elements = $this->getPageElements();
+		foreach ($elements as $name => $element) {
+			$xhtml .= $element->getXHTML();
+		}
+		return $xhtml;
 	}
 	
 	public function getXHTML() {
@@ -74,10 +84,7 @@ class PageLayout extends PageContent {
 		$xhtml .= $p->get_head_end();
 		$xhtml .= $p->get_body_start($this->body_onload);
 		$xhtml .= $this->preXHTML();
-		$elements = $this->getPageElements();
-		foreach ($elements as $name => $element) {
-			$xhtml .= $element->getXHTML();
-		}
+		$xhtml .= $this->getElementsXHTML();
 		$xhtml .= $this->getBodyContent();
 		
 		$xhtml .= $this->postXHTML();
@@ -137,7 +144,8 @@ class PageLayout extends PageContent {
 		ob_start();
 
 		include_once ("{$name}.php");
-		
+		$this->requested_collection = $name;
+
 		$this->updateMenus($name);  // menu has a state where the active collection is styled differently
 		$this->registerLocation($name);
 		if (class_exists($name)) {
@@ -164,7 +172,7 @@ class PageLayout extends PageContent {
 						$this->setTitle($title);
 					}
 				}
-				$this->addPageElement($title,$obj);
+				$this->addPageElement($name,$obj);
 				$this->current_id = $title;
 			} else {
 				$this->add_from_buffer();

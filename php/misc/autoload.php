@@ -15,7 +15,9 @@
  * 
 * ****************************************************************** */
 function __autoload($classname) {
-	include_once($classname . ".php");
+	$filename = $classname . ".php";
+	if (file_exists($filename))
+		include_once($filename);
 }
 
 ?>

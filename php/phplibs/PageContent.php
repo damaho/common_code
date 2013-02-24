@@ -260,7 +260,7 @@ class PageContent {
 	}
 	
 	function assimilatePageElement($obj) {
-		if (!is_object($obj))
+		if (!is_object($obj) || !$this->canShow($obj))
 			return false;
 		$obj->execute();
 		$js_files_top = $obj->getJSFilesTop();

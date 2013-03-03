@@ -162,7 +162,6 @@ class PageContent {
 			return false;
 		}
 		$this->plugins[$name] = new $name();
-		$this->assimilatePageElement($this->plugins[$name]);
 	}
 	
 	public function addTabbedPageElement($name,$element) {
@@ -306,6 +305,9 @@ class PageContent {
 			$this->assimilatePageElement($obj);
 		}
 		foreach ($this->extra_content as $name => $obj) {
+			$this->assimilatePageElement($obj);
+		}
+		foreach ($this->plugins as $name => $obj) {
 			$this->assimilatePageElement($obj);
 		}
 		// TODO - protected assimilateCustomContent method - makes this more flexible (allows nesting)

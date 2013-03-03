@@ -101,12 +101,17 @@ function curlBGPost($url,$json) {
 	return $x;
 }
 
-function getUTCDateFromTS($ts) {
+function getUTCSecondsDiff() {
 	$now_ts = time();
-	$gmt = gmdate('Y-m-d H:i:s');
-	$gmts = strtotime($gmt);
+	$gmts = strtotime(gmdate('Y-m-d H:i:s'));
 	$diff = $gmts - $now_ts;
-	return date('Y-m-d H:i:s',$ts + $diff);
+	return $diff;
+}
+
+function getUTCDateFromTS($ts, $dateformat = 'Y-m-d H:i:s') {
+	$diff = getUTCSecondsDiff();
+	$new_ts = mktime(date('H',$ts),date('i',$ts),date('s',$ts) + $diff,date('m',$ts),date('d',$ts),date('Y',$ts));
+	return date($dateformat,$new_ts);
 }
 
 function getUTCDateFromDate($datetime) {
